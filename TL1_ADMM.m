@@ -27,7 +27,6 @@ function [X,Y,W] = TL1(A,options)
         Y = X+invsigma*W;
         Y(nzidx) = (1/(1+sigma))*(Aobs+sigma*Y(nzidx));
         W = W + tau*sigma*(X-Y);  
-        
         normX = max(1,norm(X,'fro'));
         primfeas = norm(Y-X,'fro')/normX;
         dualfeas = Fnorm(Yold-Y) + invsigma*norm(X(nzidx)-Y(nzidx));
@@ -51,3 +50,5 @@ function [X,Y,W] = TL1(A,options)
         end
         if (breakyes); break; end
     end
+
+    
