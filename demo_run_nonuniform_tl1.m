@@ -1,3 +1,4 @@
+
     rng('default');
     set = 0;
     eg = 2;   % For uniform setting, change to eg = 1
