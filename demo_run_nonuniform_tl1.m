@@ -3,14 +3,13 @@
     set = 0;
     eg = 2;   % For uniform setting, change to eg = 1
     maxiter = 10;
-    d1_values = 100;
+    d1_values = [100, 150];
     r_values = [2, 5];
     SR_values = [0.1, 0.2];
 
     % Preallocate results matrices
     num_models = length(d1_values) * length(r_values) * length(SR_values);
     Erra = zeros(1, num_models);
-    Std_err = zeros(1, num_models);
     Tima = zeros(1, num_models);
 
     % Iterate over parameter combinations
@@ -64,7 +63,7 @@
                     randvec = randvec / norm(randvec);
                     A(nzidx) = Mobs + (noiseLevel * norm(Mobs)) * randvec;
 
-                    % Call TL1 function
+                    % Call TL1 ADMM algorithm
                     t = cputime;
                     [M2, ~, ~] = TL1(A, options);
                     Tim(iter) = cputime - t;
@@ -75,13 +74,11 @@
 
                 % Store results
                 Erra(set) = mean(Err);
-                Std_err(set) = std(Err) / sqrt(maxiter);
                 Tima(set) = mean(Tim);
             end
         end
     end
 
     % Display or save results as needed
-    disp('Errors:'), disp(Erra);
-    disp('Standard Errors:'), disp(Std_err);
-    disp('Timings:'), disp(Tima);
+    disp(Erra);
+    disp(Tima);
