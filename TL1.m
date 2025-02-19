@@ -40,8 +40,7 @@ function [X,Y,W] = TL1(A,options)
         end        
         if (rem(iter,20)==1) || (breakyes)
            ttime = etime(clock,tstart);                 
-           fprintf(' %3.0f %3.2e %3.2e| %3.2e %3.0f| %5.2f\n',...
-           iter,primfeas,dualfeas,sigma,rankX,ttime);  
+           
         end
         if (rem(iter,10)==0) 
            if (primfeas < 0.5*dualfeas); 
