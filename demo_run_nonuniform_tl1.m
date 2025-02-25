@@ -30,7 +30,7 @@
                 % Choose the uniform/non-uniform sampling 
                 if eg == 1
                     idx = randperm(len, round(SR * len));
-                    options.lamfactor = 1e-3; %needed to be tuned
+                    options.lamfactor = 1e-1; %needed to be tuned
                     options.sigma = 5e-3; 
                 elseif eg == 2
                     pvec = ones(d1, 1);
@@ -49,7 +49,7 @@
                     [~, sortidx] = sort(probmatrix(:), 'descend');
                     nzidx = sortidx(1:round(SR * len));
 
-                    options.lamfactor = 2e-4; %needed to be tuned
+                    options.lamfactor = 1e-1; %needed to be tuned
                     options.sigma = 5e-3;
                 end
 
