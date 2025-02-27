@@ -1,7 +1,7 @@
 
     rng('default');
     set = 0;
-    eg = 2;   % For uniform setting, change to eg = 1
+    eg = 2;   % Under scheme 2 setting; for uniform setting, change to eg = 1
     maxiter = 10;
     d1_values = [100, 150];
     r_values = [2, 5];
@@ -12,7 +12,7 @@
     Erra = zeros(1, num_models);
     Tima = zeros(1, num_models);
 
-    % Iterate over parameter combinations
+    % Iterate cross various combinations
     for d1 = d1_values
         d2 = d1;
         len = d1 * d2;
@@ -22,7 +22,7 @@
                 Err = zeros(1, maxiter);
                 Tim = zeros(1, maxiter);
 
-                % Generate random matrices once per (d1, r) combination
+                % Generate left and right matrix with rank r
                 ML = randn(d1, r);
                 MR = randn(d2, r);
                 M = ML * MR';
@@ -32,33 +32,31 @@
                     idx = randperm(len, round(SR * len));
                     options.lamfactor = 1e-1; %needed to be tuned
                     options.sigma = 5e-3; 
-                elseif eg == 2
+                elseif eg == 2      
                     pvec = ones(d1, 1);
                     cnt = round(0.1 * d1);
                     pvec(1:cnt) = 2 * pvec(1:cnt);
                     pvec(cnt + (1:cnt)) = 4 * pvec(cnt + (1:cnt));
                     pvec = d1 * pvec / sum(pvec);
-
                     qvec = ones(d2, 1);
                     cnt = round(0.1 * d2);
                     qvec(1:cnt) = 2 * qvec(1:cnt);
                     qvec(cnt + (1:cnt)) = 4 * qvec(cnt + (1:cnt));
                     qvec = d2 * qvec / sum(qvec);
-
                     probmatrix = rand(d1, d2) .* (pvec * qvec');
                     [~, sortidx] = sort(probmatrix(:), 'descend');
                     nzidx = sortidx(1:round(SR * len));
-
+                    
                     options.lamfactor = 1e-1; %needed to be tuned
                     options.sigma = 5e-3;
                 end
 
                 % Main iteration loop
                 for iter = 1:maxiter
-                    % Generate observed matrix with noise
+                    % Generate observed matrix with noise or noiseless
                     A = zeros(d1, d2);
                     Mobs = M(nzidx);
-                    noiseLevel = 0;
+                    noiseLevel = 0;  %Change the noise level
                     randvec = randn(length(nzidx), 1);
                     randvec = randvec / norm(randvec);
                     A(nzidx) = Mobs + (noiseLevel * norm(Mobs)) * randvec;
@@ -66,9 +64,9 @@
                     % Call TL1 ADMM algorithm
                     t = cputime;
                     [M2, ~, ~] = TL1(A, options);
-                    Tim(iter) = cputime - t;
+                    Tim(iter) = cputime - t;  % Get the running times
 
-                    % Calculate relative error
+                    % Calculate relative error (RE)
                     Err(iter) = norm(M2 - M, 'fro') / norm(M, 'fro');
                 end
 
