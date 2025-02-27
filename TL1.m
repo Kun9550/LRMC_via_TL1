@@ -1,12 +1,12 @@
 
 function [X,Y,W] = TL1(A,options)
-    sigma = 5e-3; 
+    sigma = 5e-3;  %step size
     lamfactor = options.lamfactor;
     if isfield(options,'sigma'); sigma = options.sigma; end    
     
     Fnorm = @(X) mexFnorm(X); 
     tstart = clock;
-    maxiter = 200; 
+    maxiter = 500; 
     stoptol = 1e-6;
     [m,n] = size(A);
     nzidx = find(abs(A) > 0); 
@@ -30,7 +30,7 @@ function [X,Y,W] = TL1(A,options)
         normX = max(1,norm(X,'fro'));
         primfeas = norm(Y-X,'fro')/normX;
         dualfeas = Fnorm(Yold-Y) + invsigma*norm(X(nzidx)-Y(nzidx));
-        if (max(primfeas,dualfeas) < stoptol) 
+        if (max(primfeas,dualfeas) < stoptol)   
            if (lam==lamtarget)
               breakyes=1;
            else
@@ -50,5 +50,7 @@ function [X,Y,W] = TL1(A,options)
         end
         if (breakyes); break; end
     end
+    
+% The stopping criterion is followed from the hybrid regularization paper for fast convergence.
 
     
