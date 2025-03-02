@@ -51,7 +51,5 @@ function [X,Y,W] = TL1(A,options)
         if (breakyes); break; end
     end
     
-%
-% Reference: Ethan X Fang, Han Liu, Kim-Chuan Toh, and Wen-Xin Zhou. Max-norm optimization for robust matrix recovery. Mathematical Programming, 167:5–35, 2018.
 
     
